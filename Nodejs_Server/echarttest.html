@@ -65,13 +65,27 @@
  		}
  		//请求数据函数
  		function getData(){
+ 			//请求时间
+ 			fetch("http://127.0.0.1:3000/time")
+ 				.then(status)
+ 				.then(json)
+ 				.then(function(data){
+ 			    	// 折线图湿度
+ 			    	myChart.setOption({
+ 			    	        xAxis:{
+								data:data
+							}
+ 			    	});
+ 				})
+ 				.catch(function(err){
+ 			    	console.log("Fetch错误:"+err);
+ 				});
  			//请求温度数据
  			fetch("http://127.0.0.1:3000/tem")
  				.then(status)
  				.then(json)
- 				.then(function(data){
- 			    	// console.log("请求成功，JSON解析后的响应数据为:",data);
- 			    	
+ 				.then(function(data){		    	
+ 			    	//折线图温度
  			    	myChart.setOption({
  			    	       
  			    	       series: [{
@@ -80,7 +94,7 @@
  			    	           data: data
  			    	       }]
  			    	});
-
+ 			    	//仪表盘温度
  			    	temChart.setOption({
  			    	       
  			    	       series: [{
@@ -92,13 +106,12 @@
  				.catch(function(err){
  			    	console.log("Fetch错误:"+err);
  				});
-
  			//请求湿度数据
  			fetch("http://127.0.0.1:3000/hum")
  				.then(status)
  				.then(json)
  				.then(function(data){
- 			    	// console.log("请求成功，JSON解析后的响应数据为:",data);
+ 			    	// 折线图湿度
  			    	myChart.setOption({
  			    	       series: [{
  			    	           // 根据名字对应到相应的系列
@@ -106,6 +119,7 @@
  			    	           data: data
  			    	       }]
  			    	});
+ 			    	//湿度仪表盘
  			    	humChart.setOption({
  			    	       series: [{
  			    	           // 根据名字对应到相应的系列
@@ -116,7 +130,6 @@
  				.catch(function(err){
  			    	console.log("Fetch错误:"+err);
  				});
-
  		}
  		//更新ECharts数据
 		setInterval('getData()',10);
@@ -136,7 +149,7 @@
 				data:['温度','湿度']
 			},
 			xAxis:{
-				data:["1","2","3","4","最新"]
+				data:["wait1","wait2","wait3","wait4","wait5"]
 			},
 			yAxis:{},
 			series: [{
