@@ -197,7 +197,7 @@ _Bool NET_DEVICE_Exist(void)
 #else
 				UsartPrintf(USART_DEBUG, "STA Tips:	Link Wifi\r\n");
 				
-				while(NET_DEVICE_SendCmd("AT+CWJAP=\"ONENET\",\"IOT@Chinamobile123\"\r\n", "GOT IP", 1))
+				while(NET_DEVICE_SendCmd("AT+CWJAP=\"nb\",\"123456789\"\r\n", "GOT IP", 1))
 				{
 					Led7_Set(LED_ON);
 					DelayXms(500);

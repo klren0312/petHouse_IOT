@@ -28,7 +28,7 @@ extern NET_DEVICE_INFO netDeviceInfo;
 
 #define NET_DEVICE_TRANS		0 //1-使能透传模式		0-失能透传模式
 
-#define PHONE_AP_MODE			0	//1-使用手机热点模式。当周围无路由时，AirKiss无法使用，则使用固定方式配置
+#define PHONE_AP_MODE			1	//1-使用手机热点模式。当周围无路由时，AirKiss无法使用，则使用固定方式配置
 									//0-使用AirKiss的方式配网
 
 
