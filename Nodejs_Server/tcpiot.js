@@ -27,8 +27,9 @@ net.createServer(function(socket){
 	socket.on('data',function(data){
 		console.log('got:',data.toString());
 
-		var text = JSON.parse(data.toString());
+		var text =JSON.parse(data.toString());
 		var arr = {};
+
 		arr.tem = text.temperature;
 		arr.hum = text.humidity;
 		arr.indoor = text.Red_Led;
