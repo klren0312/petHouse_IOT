@@ -27,8 +27,7 @@ app.all('*',function(req,res,next){
 //温度
 app.get('/tem',function(req,res){
 	var tem = [];
-	conn.query('SELECT * FROM env',function(err,rows,fields){
-		var i  = rows.length;
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
 		var i = rows.length;
 		var j =i-5;
 		var c= 0;
@@ -43,7 +42,7 @@ app.get('/tem',function(req,res){
 //湿度
 app.get('/hum',function(req,res) {
 	var hum = [];
-	conn.query('SELECT * FROM env',function(err,rows,fields){
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
 		var i = rows.length;
 		var j =i-5;
 		var c= 0;
@@ -58,25 +57,42 @@ app.get('/hum',function(req,res) {
 });
 //宠物室内室外
 app.get('/indoor',function(req,res) {
-	var hum = [];
-	conn.query('SELECT * FROM env',function(err,rows,fields){
+	var indoor = [];
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
 		var i = rows.length;
 		var j =i-5;
 		var c= 0;
 		while(j<i){
-			hum[c] = rows[j].indoor;
+			indoor[c] = rows[j].indoor;
 			c++;
 			j++;
 		}
-		res.send(JSON.stringify(hum));
+		res.send(JSON.stringify(indoor));
 	})
 	 
 });
+//时间推送
+app.get('/time',function(req,res){
+	var time = [];
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
+		var i = rows.length;
+		var j = i - 5;
+		var c = 0 ;
+		while(j<i){
+			var timeorigin= rows[j].time;
+			var timeafter= timeorigin.split(" ");
+			time[c] = timeafter[1];
+			c++;
+			j++;
+		}
 
+		res.send(JSON.stringify(time));
+	})
+})
 //手表推送
 app.get('/watch',function(req,res){
 	var tem = [];
-	conn.query('SELECT * FROM env',function(err,rows,fields){
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
 		var tem = "{ \"temhum\" :" + "\"" + rows[rows.length-1].tem + "  |  " 
 		+ rows[rows.length-1].hum +  "\""  + "}";
 		res.send(tem);
@@ -84,8 +100,7 @@ app.get('/watch',function(req,res){
 })
 //端口：3000
 var server = app.listen(3000,function(){
-	var host = server.address().address;
-	var port = server.address().port;
+ 
 
-	console.log(host + "  " + port);
+	console.log("127.0.0.1:3000");
 })
