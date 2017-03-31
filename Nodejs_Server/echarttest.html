@@ -26,11 +26,22 @@
 		h1{
 			position: absolute;
 			color: white;
-			top: 66%;
-			left: 35%;
+			top: 50%;
+			left: 45%;
 			z-index: 100;
 		}
 
+		#image1,#image0{
+			width: 308px;
+			height: 156px;
+		}
+		
+		#indoor{
+			position: absolute;
+			top: 65%;
+			left: 39%;
+			z-index: 100;
+		}
 	</style>
 	<script src="echarts.js"></script>
 
@@ -38,9 +49,14 @@
 <body>
 	
 	<div id="main"></div>
-	<h1>治电科技温湿度实时显示测试</h1>
+	<h1>宠物屋实时</h1>
+	<div id="indoor">
+		<img src="img/1.png" alt="" id="image1">
+		<img src="img/0.png" alt="" id="image0">
+	</div>
 	<div id="tem"></div>
 	<div id="hum"></div>
+	
 
 	<script>
 
@@ -65,6 +81,27 @@
  		}
  		//请求数据函数
  		function getData(){
+ 			 //请求宠物是否在屋内
+ 			fetch("http://127.0.0.1:3000/indoor")
+ 				.then(status)
+ 				.then(json)
+ 				.then(function(data){
+
+ 					var div = document.getElementById('indoor'); 
+ 					var image1 = document.getElementById('image1');
+ 					var image0 = document.getElementById('image0');
+
+ 			    	if(data[data.length-1] == 1){
+ 			    		 image0.style.display = "none";
+ 			    		 image1.style.display = "block";  
+ 			    	}else{
+ 			    		 image1.style.display = "none";
+ 			    		 image0.style.display = "block";  
+ 			    	}
+ 				})
+ 				.catch(function(err){
+ 			    	console.log("Fetch错误:"+err);
+ 				});
  			//请求时间
  			fetch("http://127.0.0.1:3000/time")
  				.then(status)
@@ -139,29 +176,78 @@
 		var temChart = echarts.init(document.getElementById('tem'));
 		var humChart = echarts.init(document.getElementById('hum'));
 
-		//配置温湿度折线图
-		var option ={
-			title:{
-				text:'温湿度'
-			},
-			tooltip:{},//提示框
-			legend:{//图例组件
-				data:['温度','湿度']
-			},
-			xAxis:{
-				data:["wait1","wait2","wait3","wait4","wait5"]
-			},
-			yAxis:{},
-			series: [{
-        		name: '温度',
-       			type: 'line',
-        		data: []
-    		},{
-    			name:"湿度",
-    			type:'line',
-    			data:[]
-    		}]
-		};
+			//配置温湿度折线图
+			var colors = ['#5793f3', '#d14a61', '#675bba'];
+			var option ={
+				color:colors,
+				tooltip: {
+			        trigger: 'none',
+			        axisPointer: {
+			            type: 'cross'
+			        }
+			    },//提示框
+				grid: {
+						x: 35,
+						x2: 10,
+						y: 50,
+						y2: 25
+				},
+				legend:{//图例组件
+					data:['温度','湿度']
+				},
+				
+				xAxis:[{
+					type: 'category',
+		            axisTick: {
+		                alignWithLabel: true
+		            },
+		            axisLine: {
+		                onZero: false,
+		                lineStyle: {
+		                    color: colors[0]
+		                }
+		            },
+		            axisPointer: {
+		                label: {
+		                    formatter: function (params) {
+		                        return '温度  ' + params.value + '：' + params.seriesData[0].data;
+		                    }
+		                }
+		            },
+					data:["wait1","wait2","wait3","wait4","wait5"]
+				},
+				{
+		            type: 'category',
+		            axisTick: {
+		                alignWithLabel: true
+		            },
+		            axisLine: {
+		                onZero: false,
+		                lineStyle: {
+		                    color: colors[1]
+		                }
+		            },
+		            axisPointer: {
+		                label: {
+		                    formatter: function (params) {
+		                        return '湿度  ' + params.value + '：' + params.seriesData[0].data;
+		                    }
+		                }
+		            },
+		            data:["1","2","3","4","最新"]
+       			}
+				],
+				yAxis:{},
+				series: [{
+	        		name: '温度',
+	       			type: 'line',
+	        		data: []
+	    		},{
+	    			name:"湿度",
+	    			type:'line',
+	    			data:[]
+	    		}]
+			};
 
 		//配置温度实时仪表盘
 		var temOption ={
