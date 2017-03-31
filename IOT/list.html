@@ -15,30 +15,84 @@
 				height: 50%;
 				margin-top: 20%;
 			}
+			#image1,#image0{
+				width: 100%;
+				height: 156px;
+			}
+		
     	</style>
 	</head>
 
 	<body>
-		<div class="mui-content">
+
+		
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<ul class="mui-table-view mui-table-view-chevron">
+							<div class="mui-content">
 			<ul id="list" class="mui-table-view mui-table-view-chevron">
 				<li class="mui-table-view-cell" id="device1" >
 					<div class="mui-navigate-right"  >
-						我的设备一
+						宠物屋环境查看
 					</div>
 				</li>
 				<li class="mui-table-view-cell" id="device2" >
 					<div class="mui-navigate-right"  >
-						我的设备二
+						测试界面
 					</div>
 				</li>
 			</ul>
-			
 		</div>
-		<center>
-			<img src="imgs/zvd.png"/>
-		</center>		
+					<center> 
+						<div>
+							<img src="imgs/1.png" alt="" id="image1">
+							<img src="imgs/0.png" alt="" id="image0">
+						</div>
+						<br />
+						<h1>上图显示为宠物当前状态</h1>
+					</center>						
+				</ul>
+			</div>
+		</div>
+						
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript">
+		<script type="text/javascript">	
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					 //请求宠物是否在屋内
+				mui.getJSON('http://10.127.5.188:3000/indoor',function(data){
+						var div = document.getElementById('indoor'); 
+	 					var image1 = document.getElementById('image1');
+	 					var image0 = document.getElementById('image0');
+	
+	 			    	if(data[data.length-1] == 1){
+	 			    		 image0.style.display = "none";
+	 			    		 image1.style.display = "block";  
+	 			    	}else{
+	 			    		 image1.style.display = "none";
+	 			    		 image0.style.display = "block";  
+	 			    	}			
+				});
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+				}, 1500);
+			}
+  
+	 			
+ 
+ 
+ 
  			document.getElementById('device1').addEventListener('tap', function() {
   				mui.openWindow({
   					url:'pages/device1.html',
@@ -57,7 +111,9 @@
   					}
   				})
 			});
- 
+			
+	 		//更新宠物数据
+			 
 		</script>
 	</body>
 
