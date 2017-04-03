@@ -93,8 +93,15 @@ app.get('/time',function(req,res){
 app.get('/watch',function(req,res){
 	var tem = [];
 	conn.query('SELECT * FROM pet',function(err,rows,fields){
-		var tem = "{ \"temhum\" :" + "\"" + rows[rows.length-1].tem + "  |  " 
-		+ rows[rows.length-1].hum +  "\""  + "}";
+		var indoor;
+		if (rows[rows.length-1].indoor == 1) {
+			indoor = "在";
+		}else{
+			indoor = "不";
+		}
+
+		var tem = "{ \"temhum\" :" + "\"" + rows[rows.length-1].tem +" "+indoor 
+		+" "+ rows[rows.length-1].hum +  "\""  + "}";
 		res.send(tem);
 	})
 })
