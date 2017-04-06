@@ -1,7 +1,7 @@
 var express = require('express');
 var mysql = require('mysql');
 app = express();
-
+app.use('/static',express.static('public'));
 //数据库配置
 var conn = mysql.createConnection({
 	host:'localhost',
