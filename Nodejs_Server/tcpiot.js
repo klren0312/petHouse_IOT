@@ -37,7 +37,9 @@ net.createServer(function(socket){
 		arr.x = text.Xg;
 		arr.y = text.Yg;
 		arr.z = text.Zg;
-		
+		conn.query('DELETE FROM pet WHERE id NOT IN ( SELECT id FROM ( SELECT id FROM pet ORDER BY id DESC LIMIT 5 ) foo )',function(error,result,fields){
+			if (error) throw error;
+		})
 		conn.query('INSERT INTO pet SET ?', arr, function(error,result,fields){
 			if (error) throw error;
 		});
