@@ -473,6 +473,16 @@
               <FileType>1</FileType>
               <FilePath>.\fwlib\src\stm32f10x_adc.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\fwlib\src\stm32f10x_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\fwlib\src\stm32f10x_flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -557,6 +567,16 @@
               <FileName>lcd1602.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\hardware\src\lcd1602.c</FilePath>
+            </File>
+            <File>
+              <FileName>rthongwai.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware\src\rthongwai.c</FilePath>
+            </File>
+            <File>
+              <FileName>duoji.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware\src\duoji.c</FilePath>
             </File>
           </Files>
         </Group>

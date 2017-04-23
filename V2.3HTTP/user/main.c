@@ -1,23 +1,3 @@
-/**
-	************************************************************
-	************************************************************
-	************************************************************
-	*	文件名： 	main.c
-	*
-	*	作者： 		张继瑞
-	*
-	*	日期： 		2017-01-011
-	*
-	*	版本： 		V1.0
-	*
-	*	说明： 		接入onenet，上传数据和命令控制
-	*
-	*	修改记录：	
-	************************************************************
-	************************************************************
-	************************************************************
-**/
-
 //单片机头文件
 #include "stm32f10x.h"
 
@@ -31,7 +11,6 @@
 //硬件驱动
 #include "led.h"
 #include "delay.h"
-#include "key.h"
 #include "lcd1602.h"
 #include "usart.h"
 #include "hwtimer.h"
@@ -43,13 +22,17 @@
 #include "at24c02.h"
 #include "selfcheck.h"
 #include "beep.h"
-#include "oled.h"
 #include "info.h"
 #include "tcrt5000.h"
+#include "rthongwai.h"
+#include "duoji.h"
 
 //C库
 #include <string.h>
 
+//全局变量
+unsigned char uart5Len = 0;	//usart3接收的数据长度
+char uart5Buf[64];	//usart3接收缓存
 
 //数据流
 DATA_STREAM dataStream[] = {
@@ -93,7 +76,9 @@ void Hardware_Init(void)
 	
 	Led_Init();																	//LED初始化
 	
-	Key_Init();																	//按键初始化
+	Body_Init();																//人体红外初始化
+	
+	Duoji_Init(9999,143);	 											//舵机初始化 
 	
 	Beep_Init();																//蜂鸣器初始化
 	
@@ -105,6 +90,8 @@ void Hardware_Init(void)
 	
 	Usart1_Init(115200); 														//初始化串口   115200bps
 	
+	Uart5_Init(9600);															//初始化蓝牙串口  9600bps
+	
 	Lcd1602_DisString(0x80, "Check Power On");									//提示进行开机检测
 	Check_PowerOn(); 															//上电自检
 	Lcd1602_Clear(0x80);														//清第一行显示
@@ -112,11 +99,7 @@ void Hardware_Init(void)
 	if(checkInfo.ADXL345_OK == DEV_OK) 											//如果检测到ADXL345则初始化
 		ADXL345_Init();
 	
-	if(checkInfo.OLED_OK == DEV_OK)												//如果检测到OLED则初始化
-	{
-		OLED_Init();
-		OLED_ClearScreen();														//清屏
-	}
+
 
 	if(RCC_GetFlagStatus(RCC_FLAG_IWDGRST) == SET) 								//如果是看门狗复位则提示
 	{
@@ -170,19 +153,7 @@ int main(void)
 
 	Hardware_Init();									//硬件初始化
 	
-	//标题显示
-	OLED_DisChar16x16(0, 0, san);						//显示“三”
-	OLED_DisChar16x16(0, 16, zhou);						//显示“轴”
-	OLED_DisString6x8(1, 32, ":");						//显示“：”
-	
-	OLED_DisChar16x16(2, 0, wen);						//显示“温”
-	OLED_DisChar16x16(2, 16, shi);						//显示“湿”
-	OLED_DisChar16x16(2, 32, du);						//显示“度”
-	OLED_DisString6x8(3, 48, ":");						//显示“：”
-	
-	OLED_DisChar16x16(6, 0, zhuang);					//显示“状”
-	OLED_DisChar16x16(6, 16, tai);						//显示“态”
-	OLED_DisString6x8(7, 32, ":");						//显示“：”
+
 	
 	NET_DEVICE_IO_Init();								//网络设备IO初始化
 	NET_DEVICE_Reset();									//网络设备复位
@@ -193,59 +164,7 @@ int main(void)
 		
 		if(oneNetInfo.netWork == 1)
 		{
-/******************************************************************************
-			按键扫描
-******************************************************************************/
-			switch(Keyboard())
-			{
-				case KEY0DOWN:
-					
-					if(ledStatus.Led4Sta == LED_OFF)
-						Led4_Set(LED_ON);
-					else
-						Led4_Set(LED_OFF);
-					
-					oneNetInfo.sendData = 1;										//标记数据发送
-					
-				break;
-				
-				case KEY2DOWN:
-					
-					if(ledStatus.Led5Sta == LED_OFF)
-						Led5_Set(LED_ON);
-					else
-						Led5_Set(LED_OFF);
-					
-					oneNetInfo.sendData = 1;
-					
-				break;
-				
-				case KEY3DOWN:
-					
-					if(ledStatus.Led6Sta == LED_OFF)
-						Led6_Set(LED_ON);
-					else
-						Led6_Set(LED_OFF);
-					
-					oneNetInfo.sendData = 1;
-					
-				break;
-				
-				case KEY1DOWN:
-					
-					if(ledStatus.Led7Sta == LED_OFF)
-						Led7_Set(LED_ON);
-					else
-						Led7_Set(LED_OFF);
-					
-					oneNetInfo.sendData = 1;
-					
-				break;
-				
-				default:
-				break;
-			}
-			
+
 /******************************************************************************
 			数据与心跳
 ******************************************************************************/
@@ -288,26 +207,32 @@ int main(void)
 			{
 				ADXL345_GetValue();													//采集传感器数据
 				Lcd1602_DisString(0x80, "X%0.1f,Y%0.1f,Z%0.1f", adxlInfo.incidence_Xf, adxlInfo.incidence_Yf, adxlInfo.incidence_Zf);
-				OLED_DisString6x8(1, 40, "X%0.1f,Y%0.1f,Z%0.1f", adxlInfo.incidence_Xf, adxlInfo.incidence_Yf, adxlInfo.incidence_Zf);
 			}
 			if(checkInfo.SHT20_OK == DEV_OK) 										//只有设备存在时，才会读取值和显示
 			{
 				SHT20_GetValue();													//采集传感器数据
 				Lcd1602_DisString(0xC0, "%0.1fC,%0.1f%%", sht20Info.tempreture, sht20Info.humidity);
-				OLED_DisString6x8(3, 56, "%0.1fC,%0.1f%%", sht20Info.tempreture, sht20Info.humidity);
 			}
-			
+			//红外
 			if(t5000Info.status == TCRT5000_ON)
 			{
 				TCRT5000_GetValue(5);
 				if(t5000Info.voltag < 3500)
-					//Beep_Set(BEEP_ON);
 					Led4_Set(LED_ON);
 				else
-					//Beep_Set(BEEP_OFF);
 					Led4_Set(LED_OFF);
 			}
 			
+//			Get_Bodystatus();//人体红外判断
+			if(GPIO_ReadInputDataBit(Body_GPIO_PORT,Body_GPIO_PIN)||(t5000Info.voltag < 3500)){
+				TIM3->CCR1= 300;
+				Led5_Set(LED_OFF);
+			}else{
+				TIM3->CCR1= 735;
+				Led5_Set(LED_ON);
+			}
+			
+
 /******************************************************************************
 			错误处理
 ******************************************************************************/
@@ -332,9 +257,6 @@ int main(void)
 ******************************************************************************/
 			if(!oneNetInfo.netWork && (checkInfo.NET_DEVICE_OK == DEV_OK))			//当没有网络 且 网络模块检测到时
 			{
-				OLED_DisChar16x16(6, 48, lian);
-				OLED_DisChar16x16(6, 64, jie);
-				OLED_DisChar16x16(6, 80, zhong);
 				NET_DEVICE_Set_DataMode(DEVICE_CMD_MODE);							//设置为命令收发模式
 				
 				if(!NET_DEVICE_Init(oneNetInfo.ip, oneNetInfo.port))				//初始化网络设备，能连入网络
@@ -345,14 +267,8 @@ int main(void)
 					
 					NET_DEVICE_Set_DataMode(DEVICE_DATA_MODE);						//网络设备指令模式
 					
-					//Beep_Set(BEEP_ON);
 					DelayXms(200);
-					//Beep_Set(BEEP_OFF);
-							
-					OLED_DisChar16x16(6, 48, yi);
-					OLED_DisChar16x16(6, 64, lian);
-					OLED_DisChar16x16(6, 80, jie);
-					
+
 					runTime = timInfo.timer6Out;
 				}
 			}
@@ -383,6 +299,26 @@ int main(void)
 					UsartPrintf(USART_DEBUG, "NET Device :Error\r\n");
 			}
 		}
+/******************************************************************************
+			蓝牙控制
+******************************************************************************/			
+		if(uart5Len > 0)
+		{
+			 
+			if(strcmp(uart5Buf, "666") == 0){
+				UsartPrintf(UART5, "输入的命令是：\r\n%s\r\n", uart5Buf);
+				Led6_Set(LED_ON);
+				
+			}
+			else if(strcmp(uart5Buf, "233") == 0){
+				UsartPrintf(UART5, "输入的命令是：\r\n%s\r\n", uart5Buf);
+				Led6_Set(LED_OFF);
+			}
+			
+			
+			memset(uart5Buf, 0, sizeof(uart5Buf));
+			uart5Len = 0;
+		}		
 	}
 
 }
