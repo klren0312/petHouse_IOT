@@ -26,7 +26,7 @@ conn.connect();
 net.createServer(function(socket){
 	socket.on('data',function(data){
 		console.log('got:',data.toString());
-
+		
 		var text =JSON.parse(data.toString());
 		var arr = {};
 
