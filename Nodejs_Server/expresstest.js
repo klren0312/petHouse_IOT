@@ -71,6 +71,38 @@ app.get('/indoor',function(req,res) {
 	})
 	 
 });
+//宠物门
+app.get('/door',function(req,res) {
+	var door = [];
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
+		var i = rows.length;
+		var j =i-5;
+		var c= 0;
+		while(j<i){
+			door[c] = rows[j].door;
+			c++;
+			j++;
+		}
+		res.send(JSON.stringify(door));
+	})
+	 
+});
+//宠物屋风扇
+app.get('/feng',function(req,res) {
+	var feng = [];
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
+		var i = rows.length;
+		var j =i-5;
+		var c= 0;
+		while(j<i){
+			feng[c] = rows[j].feng;
+			c++;
+			j++;
+		}
+		res.send(JSON.stringify(feng));
+	})
+	 
+});
 //时间推送
 app.get('/time',function(req,res){
 	var time = [];
