@@ -32,7 +32,9 @@ net.createServer(function(socket){
 
 		arr.tem = text.temperature;
 		arr.hum = text.humidity;
-		arr.indoor = text.Red_Led;
+		arr.feng = text.Fengshan;
+		arr.indoor = text.Yellow_Led;
+		arr.door = text.Green_Led;
 		arr.time = new Date().toLocaleString();
 		arr.x = text.Xg;
 		arr.y = text.Yg;
