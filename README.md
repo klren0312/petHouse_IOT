@@ -1,5 +1,32 @@
 # 学年设计宠物小窝
 
+## 端口使用
+
+ - sht20 - I2C
+ - 人体红外 - PA15
+ - 舵机 - PB6
+ - 蜂鸣器 - PA4
+ - 1602屏幕 - PA11,PB4
+ - TCRT5000 - PC3,PA5
+ - LED_Blue - P10
+ - LED_Green - PC8
+ - LED_Red - PC7
+ - LED_Yellow - PA12
+ - usb串口 - USART1(PA9-TX,PA10-RX)
+ - WIFI串口 - USART2(PA2-TX,PA3-RX)
+ - 蓝牙串口 - UART5(PC12-TX,PD2-RX)
+
+## 空闲端口
+
+ - PB3
+ - PB4
+ - PA8
+ - PA5
+ - PC0
+ - PC1
+ - PC2
+ - PC3
+
 ## 日志
 
  - 2017.3.28 基本结构
