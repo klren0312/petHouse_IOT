@@ -11,7 +11,7 @@
 static uint32_t g_comm_id_web = 0;
 
 /*Web request地址*/
-#define DATA_WEB     "http://192.168.99.128:3000/watch"
+#define DATA_WEB     "http://119.29.201.31:3000/watch"
 
 /* 时间项 */
 #define DATE_TEXT_POS_X                      2
@@ -291,7 +291,7 @@ int main()
 
     //聚合数据源每隔10s更新数据
     app_window_timer_subscribe(h_window, 10000, data_timer_callback, (void *)h_window);
-   //simulator_wait();
+    //simulator_wait();
     return 0;
 
 }
