@@ -82,7 +82,7 @@
  		//请求数据函数
  		function getData(){
  			 //请求宠物是否在屋内
- 			fetch("http://127.0.0.1:3000/indoor")
+ 			fetch("http://119.29.201.31:3000/indoor")
  				.then(status)
  				.then(json)
  				.then(function(data){
@@ -103,7 +103,7 @@
  			    	console.log("Fetch错误:"+err);
  				});
  			//请求时间
- 			fetch("http://127.0.0.1:3000/time")
+ 			fetch("http://119.29.201.31:3000/time")
  				.then(status)
  				.then(json)
  				.then(function(data){
@@ -118,7 +118,7 @@
  			    	console.log("Fetch错误:"+err);
  				});
  			//请求温度数据
- 			fetch("http://127.0.0.1:3000/tem")
+ 			fetch("http://119.29.201.31:3000/tem")
  				.then(status)
  				.then(json)
  				.then(function(data){		    	
@@ -144,7 +144,7 @@
  			    	console.log("Fetch错误:"+err);
  				});
  			//请求湿度数据
- 			fetch("http://127.0.0.1:3000/hum")
+ 			fetch("http://119.29.201.31:3000/hum")
  				.then(status)
  				.then(json)
  				.then(function(data){
