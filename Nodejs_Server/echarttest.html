@@ -42,6 +42,16 @@
 			left: 39%;
 			z-index: 100;
 		}
+		
+		#fengshan{
+			position: absolute;
+			top: 51%;
+			z-index: 100;
+		}
+		.feng{
+			width: 70px;
+			height: 60px;
+		}
 	</style>
 	<script src="echarts.js"></script>
 
@@ -53,6 +63,10 @@
 	<div id="indoor">
 		<img src="img/1.png" alt="" id="image1">
 		<img src="img/0.png" alt="" id="image0">
+	</div>
+	<div id="fengshan">
+		<img class="feng" src="img/f1.gif" alt="风扇开" id="feng1">
+		<img class="feng" src="img/f0.jpg" alt="风扇关" id="feng0">
 	</div>
 	<div id="tem"></div>
 	<div id="hum"></div>
@@ -81,6 +95,22 @@
  		}
  		//请求数据函数
  		function getData(){
+ 			//请求风扇是否打开
+ 			fetch("http://119.29.201.31:3000/feng")
+ 				.then(status)
+ 				.then(json)
+ 				.then(function(data){
+ 					var div = document.getElementById('fengshan');
+ 					var feng1 = document.getElementById('feng1');
+ 					var feng0 = document.getElementById('feng0');
+ 					if (data[data.length-1] == 1) {
+ 						feng1.style.display = "block";
+ 						feng0.style.display = "none";
+ 					}else{
+ 						feng1.style.display = "none";
+ 						feng0.style.display = "block";
+ 					}
+ 				})
  			 //请求宠物是否在屋内
  			fetch("http://119.29.201.31:3000/indoor")
  				.then(status)
