@@ -27,21 +27,26 @@
 #include "rthongwai.h"
 #include "duoji.h"
 #include "fengshan.h"
+ 
 
+  
 //C库
 #include <string.h>
 
+
 //全局变量
-unsigned char uart5Len = 0;	//usart3接收的数据长度
-char uart5Buf[64];	//usart3接收缓存
+unsigned char uart5Len = 0;	//uart5接收的数据长度
+char uart5Buf[64];	//uart5接收缓存
+unsigned char usart1Len;//usart1接收的数据长度
+char usart1Buf[64];//usart1接收缓存
 
 //数据流
 DATA_STREAM dataStream[] = {
-								{"Red_Led", &ledStatus.Led4Sta, TYPE_BOOL, 1},
+//								{"Red_Led", &ledStatus.Led4Sta, TYPE_BOOL, 1},
 								{"Green_Led", &ledStatus.Led5Sta, TYPE_BOOL, 1},
 								{"Yellow_Led", &ledStatus.Led6Sta, TYPE_BOOL, 1},
 								{"Blue_Led", &ledStatus.Led7Sta, TYPE_BOOL, 1},
-								{"Fengshan", &FengStatus.FengSta, TYPE_BOOL, 1},
+								{"Fengshan", &fengStatus.FengSta, TYPE_BOOL, 1},
 								{"beep", &beepInfo.Beep_Status, TYPE_BOOL, 1},
 								{"temperature", &sht20Info.tempreture, TYPE_FLOAT, 1},
 								{"humidity", &sht20Info.humidity, TYPE_FLOAT, 1},
@@ -71,6 +76,7 @@ unsigned char dataStreamLen = sizeof(dataStream) / sizeof(dataStream[0]);
 */
 void Hardware_Init(void)
 {
+
 	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);								//中断控制器分组设置
 
@@ -93,6 +99,8 @@ void Hardware_Init(void)
 	Usart1_Init(115200); 														//初始化串口   115200bps
 	
 	Uart5_Init(9600);															//初始化蓝牙串口  9600bps
+	
+	JDQ_Init();
 	
 	Lcd1602_DisString(0x80, "Check Power On");									//提示进行开机检测
 	Check_PowerOn(); 															//上电自检
@@ -152,7 +160,8 @@ int main(void)
 	unsigned char *dataPtr;
 	unsigned int runTime = 0;
 	_Bool sendFlag = 0;
-
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST , ENABLE);
 	Hardware_Init();									//硬件初始化
 	
 Lcd1602_DisString(0x80, "PetHouse ENV");
@@ -215,29 +224,31 @@ Lcd1602_DisString(0x80, "PetHouse ENV");
 				SHT20_GetValue();													//采集传感器数据
 				Lcd1602_DisString(0xC0, "%0.1fC,%0.1f%%", sht20Info.tempreture, sht20Info.humidity);
 				if(sht20Info.tempreture>25||sht20Info.humidity>60){
-					Feng_Set(FENG_ON);
+					JDQ_Switch(J_ON,JDQ_1);	
 				}
 				else if(sht20Info.tempreture<20&&sht20Info.humidity<55){
-					Feng_Set(FENG_OFF);
+					JDQ_Switch(J_OFF,JDQ_1);	
 				}
 			}
 			//红外
 			if(t5000Info.status == TCRT5000_ON)
 			{
 				TCRT5000_GetValue(5);
-				if(t5000Info.voltag < 3500)
+				if(t5000Info.voltag < 3500){
 					Led6_Set(LED_ON);
-				else
+				}
+				else{
 					Led6_Set(LED_OFF);
+				}
 			}
 			
 //			Get_Bodystatus();//人体红外判断开门
 			if(GPIO_ReadInputDataBit(Body_GPIO_PORT,Body_GPIO_PIN)){
 				TIM3->CCR1= 300;//open
-				Led5_Set(LED_OFF);
+				Led5_Set(LED_ON);
 			}else{
 				TIM3->CCR1= 735;//close
-				Led5_Set(LED_ON);
+				Led5_Set(LED_OFF);
 			}
 			
 
@@ -308,6 +319,22 @@ Lcd1602_DisString(0x80, "PetHouse ENV");
 			}
 		}
 /******************************************************************************
+	    小娜控制
+******************************************************************************/					
+		if(usart1Len>0){
+			if(strcmp(usart1Buf,"open") == 0){
+				UsartPrintf(USART1,"输入的命令是：\r\n%s\r\n",usart1Buf);
+				JDQ_Switch(J_ON,JDQ_1);
+			}
+			else if(strcmp(usart1Buf,"close") == 0){
+				UsartPrintf(USART1,"输入的命令是：\r\n%s\r\n",usart1Buf);
+				JDQ_Switch(J_OFF,JDQ_1);
+			} 
+			
+			memset(usart1Buf, 0, sizeof(usart1Buf));
+			usart1Len = 0;
+		}
+/******************************************************************************
 			蓝牙控制
 ******************************************************************************/			
 		if(uart5Len > 0)
@@ -315,14 +342,11 @@ Lcd1602_DisString(0x80, "PetHouse ENV");
 			 
 			if(strcmp(uart5Buf, "666") == 0){
 				UsartPrintf(UART5, "输入的命令是：\r\n%s\r\n", uart5Buf);
-
-				Feng_Set(FENG_ON);
-				
+				JDQ_Switch(J_ON,JDQ_1);				
 			}
 			else if(strcmp(uart5Buf, "233") == 0){
 				UsartPrintf(UART5, "输入的命令是：\r\n%s\r\n", uart5Buf);
-
-				Feng_Set(FENG_OFF);
+			  JDQ_Switch(J_OFF,JDQ_1);
 			}
 			
 			
