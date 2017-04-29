@@ -13,6 +13,7 @@ var conn = mysql.createConnection({
 //连接数据库
 conn.connect();
 
+
 //设置所有路由无限制访问，不需要跨域
 app.all('*',function(req,res,next){
  	res.header("Access-Control-Allow-Origin","*");
@@ -36,6 +37,7 @@ app.get('/tem',function(req,res){
 			c++;
 			j++;
 		}
+
 		res.send(JSON.stringify(tem));
 	})
 })
