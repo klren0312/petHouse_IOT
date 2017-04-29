@@ -180,6 +180,22 @@
           <ExecCommand></ExecCommand>
           <Expression>\\stm32f103\hardware/src/fengshan.c\20</Expression>
         </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>229</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134234814</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\OneNET\瀹犵墿灞嬫祴璇曠増\V2.3HTTP\user\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\stm32f103\user/main.c\229</Expression>
+        </Bp>
       </Breakpoint>
       <Tracepoint>
         <THDelay>0</THDelay>
