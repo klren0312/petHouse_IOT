@@ -1,21 +1,35 @@
 #include "fengshan.h"
-FENG_STATUS FengStatus;
-/**
-*风扇初始化函数
-*/
-void Feng_Init(void){
-	GPIO_InitTypeDef gpioInitStruct;
-	RCC_APB2PeriphClockCmd(Feng_GPIO_CLK,ENABLE);
-	
-	gpioInitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-	gpioInitStruct.GPIO_Pin = Feng_GPIO_PIN;
-	gpioInitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(Feng_GPIO_PORT,&gpioInitStruct);
-	
-	Feng_Set(FENG_OFF);
+ 
+FENG_STATUS fengStatus;
+
+/*???GPIO?? GPIOA PIN5*/
+void JDQ_Init(void){
+	GPIO_InitTypeDef GPIO_Structure;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	GPIO_Structure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Structure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_Structure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA,&GPIO_Structure);
+	JDQ_Switch(J_OFF,JDQ_1);
 }
 
-void Feng_Set(FENG_ENUM status){
-	GPIO_WriteBit(Feng_GPIO_PORT,Feng_GPIO_PIN,status!=FENG_ON ? Bit_SET : Bit_RESET);
-	FengStatus.FengSta = status; 
+
+
+/*???????,????????*/
+void JDQ_Switch(const uint8_t statu,const uint8_t mode){
+	if(statu){
+		JDQ_OFF;
+		
+		if(mode&0x01){
+			fengStatus.FengSta=0;
+			JDQ_ON;
+		}
+	}else{
+		if(mode&0x01){
+			fengStatus.FengSta=1;
+			JDQ_OFF;
+		}
+	}
 }
+
+ 

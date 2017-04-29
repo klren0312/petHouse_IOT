@@ -3,19 +3,30 @@
 
 #include "stm32f10x.h"
 
-#define Feng_GPIO_PORT GPIOA
-#define Feng_GPIO_PIN GPIO_Pin_5
-#define Feng_GPIO_CLK RCC_APB2Periph_GPIOA
 
-typedef struct{
+
+#define JDQ_ON GPIO_SetBits(GPIOA,GPIO_Pin_8)
+#define JDQ_OFF GPIO_ResetBits(GPIOA,GPIO_Pin_8)
+
+#define  JDQ_1    0X01
+#define  J_ON  0
+#define  J_OFF  (!J_ON)
+
+typedef struct
+{
+
 	_Bool FengSta;
-}FENG_STATUS;
-extern FENG_STATUS FengStatus;
 
-typedef enum{
-	FENG_OFF = 0,
-	FENG_ON
-}FENG_ENUM;
+} FENG_STATUS;
 
-void Feng_Set(FENG_ENUM status);
+ extern FENG_STATUS fengStatus;
+
+
+void JDQ_Init(void);
+ 
+void JDQ_Switch(const uint8_t statu,const uint8_t mode);
+_Bool JDQ_GetValue(void);
+
+
+
 #endif
