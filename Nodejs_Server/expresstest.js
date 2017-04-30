@@ -139,6 +139,30 @@ app.get('/watch',function(req,res){
 		res.send(tem);
 	})
 })
+ 
+//按钮api
+app.get('/buttonclick1',function(req,res){
+ 
+	//增加
+	var post = {status:1};
+	conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
+		if(error) throw error;
+	});
+	res.send("1");
+
+    res.end();// 如果不执行end(), 那么前端网页则会一直等待response
+})
+app.get('/buttonclick0',function(req,res){
+ 
+	//增加
+	var post = {status:0};
+	conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
+		if(error) throw error;
+	});
+	res.send("0");
+
+    res.end();// 如果不执行end(), 那么前端网页则会一直等待response
+})
 //端口：3000
 var server = app.listen(3000,function(){
  
