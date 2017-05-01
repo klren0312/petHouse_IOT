@@ -26,7 +26,10 @@ conn.connect();
 net.createServer(function(socket){
 	socket.on('data',function(data){
 		console.log('got:',data.toString());
-		
+		conn.query('SELECT * FROM status',function(err,rows,fields){
+			if (err) throw err;
+			socket.write(rows[rows.length-1].status+"");
+		})			
 		var text =JSON.parse(data.toString());
 		var arr = {};
 
@@ -50,7 +53,8 @@ net.createServer(function(socket){
 	socket.on('end',function(data){
 		console.log('end');
 	});
-	socket.write('Ready to receive your message!')
+
+	
 	 
 }).listen(4001);
 
