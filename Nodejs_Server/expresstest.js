@@ -139,7 +139,22 @@ app.get('/watch',function(req,res){
 		res.send(tem);
 	})
 })
- 
+
+//new 手表推送
+app.get('/newwatch',function(req,res){
+	var data = [];
+	conn.query('SELECT * FROM pet',function(err,rows,fields){
+		var indoor = "";
+		if ( rows[rows.length-1].indoor== 1) {
+			indoor = "在"
+		}else{
+			indoor = "不在"
+		}
+
+		data = "{ \"tem\":"+  rows[rows.length-1].tem  +",\"hum\":"+  rows[rows.length-1].hum  +",\"indoor\":"+ "\""+   indoor +"\" }"
+		res.send(data);
+	})
+})
 //按钮api
 app.get('/buttonclick1',function(req,res){
  
