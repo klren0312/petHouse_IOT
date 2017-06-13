@@ -45,12 +45,42 @@
 		
 		#fengshan{
 			position: absolute;
-			top: 51%;
+			top: 52%;
 			z-index: 100;
 		}
 		.feng{
 			width: 70px;
 			height: 60px;
+		}
+
+		#timeset{
+			position: absolute;
+			top: 70%;
+			left: 8%;
+			z-index: 1000;
+		}
+		#time{
+			height: 35px;
+			width: 110px;
+			font-size: 20px;
+		}
+		#timefont{
+			position: absolute;
+			top: 68%;
+			font-size: 20px;
+			color: white;
+			z-index: 1000;
+		}
+		#databtn{
+			position: absolute;
+			top: 80%;
+			left: 1%;
+			width: 200px;
+			height: 25px;
+			color: white;
+			background-color: #D4A983;
+			border-radius: 5px 5px;
+			z-index: 1000;
 		}
 	</style>
 	<script src="echarts.js"></script>
@@ -68,17 +98,26 @@
 		<img class="feng" src="img/f1.gif" alt="风扇开" id="feng1">
 		<img class="feng" src="img/f0.jpg" alt="风扇关" id="feng0">
 	</div>
+	<form id="myform" action="" method="get">
+		<p id="timefont">喂食次数：</p>
+		<div id="timeset">
+			<select name="time" id="time">
+				<option value="od1">一天一次</option>
+				<option value="od2">一天两次</option>
+				<option value="od3">一天三次</option>
+			</select>
+		</div>	
+		<br>
+		<button type="button" id="databtn" onclick="datapush()">提交</button>
+		
+	</form>
+	
 	<div id="tem"></div>
 	<div id="hum"></div>
 	
 
 	<script>
 
-		//页面刷新函数
- 		// function freshWeb(){
- 		// 	window.location.reload();
- 		// }
- 	
 
 
  		//fetch异步请求函数
@@ -92,6 +131,28 @@
  		}
  		function json(response){
  		    return response.json();
+ 		}
+ 		//页面刷新函数
+ 		// function freshWeb(){
+ 		// 	window.location.reload();
+ 		// }
+ 		var myform = document.getElementById('myform');
+
+ 		function datapush(){
+ 			var timedata = document.getElementById('time').value;
+ 			var test = "{\"times\": \""+ timedata + "\"}";
+ 			console.log(test);
+ 			fetch("http://localhost:3000/times",{
+ 				method:'post',
+ 				body: test
+ 			})
+ 			.then(status)
+ 			.then(json)
+ 			.then(function(data){
+ 				// myform.submit();
+ 				// console.log('request successed with JSON',data);
+ 			})
+ 			
  		}
  		//请求数据函数
  		function getData(){
@@ -199,7 +260,7 @@
  				});
  		}
  		//更新ECharts数据
-		setInterval('getData()',10);
+		// setInterval('getData()',10);
 
 		//初始化echarts
 		var myChart = echarts.init(document.getElementById('main'));
