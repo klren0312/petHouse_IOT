@@ -26,9 +26,19 @@ conn.connect();
 net.createServer(function(socket){
 	socket.on('data',function(data){
 		console.log('got:',data.toString());
+		// conn.query('SELECT * FROM status',function(err,rows,fields){
+		// 	if (err) throw err;
+		// 	socket.write(rows[rows.length-1].status+"");
+		// })	
 		conn.query('SELECT * FROM status',function(err,rows,fields){
-			if (err) throw err;
-			socket.write(rows[rows.length-1].status+"");
+			if (rows[rows.length-1].status == 1) {
+				socket.write("1");
+				conn.query('INSERT INTO status SET ?',{"status":"0"},function(error,result,fields){
+					if (error) throw error;
+				})
+			}else{
+				socket.write("0");
+			}
 		})			
 		var text =JSON.parse(data.toString());
 		var arr = {};
