@@ -142,7 +142,7 @@
  			var timedata = document.getElementById('time').value;
  			var test = "{\"times\": \""+ timedata + "\"}";
  			console.log(test);
- 			fetch("http://localhost:3000/times",{
+ 			fetch("http://119.29.201.31:3000/times",{
  				method:'post',
  				body: test
  			})
@@ -260,7 +260,7 @@
  				});
  		}
  		//更新ECharts数据
-		// setInterval('getData()',10);
+		setInterval('getData()',10);
 
 		//初始化echarts
 		var myChart = echarts.init(document.getElementById('main'));
@@ -329,8 +329,7 @@
        			}
 				],
 				yAxis:{
-					min: 0,
-        		max: 80,
+
 				},
 				series: [{
 	        		name: '温度',
