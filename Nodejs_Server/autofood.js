@@ -18,7 +18,7 @@ conn.query('select * from autofood',function(err,rows,fields){
 	switch(tem){
 		case 1:
 			console.log("type1");
-			var j =schedule.scheduleJob('12 * * * *',function(){
+			var j =schedule.scheduleJob('12 * * * ',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
@@ -27,13 +27,13 @@ conn.query('select * from autofood',function(err,rows,fields){
 			break;
 		case 2:
 			console.log("type2");
-			var j =schedule.scheduleJob('9 * * * *',function(){
+			var j =schedule.scheduleJob('9 * * * ',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
 				});
 			});
-			var k =schedule.scheduleJob('15 * * * *',function(){
+			var k =schedule.scheduleJob('15 * * * ',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
@@ -42,19 +42,19 @@ conn.query('select * from autofood',function(err,rows,fields){
 			break;
 		case 3:
 			console.log("type3");
-			var j =schedule.scheduleJob('8 * * * *',function(){
+			var j =schedule.scheduleJob('8 * * * ',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
 				});
 			});
-			var k =schedule.scheduleJob('12 * * * *',function(){
+			var k =schedule.scheduleJob('12 * * *',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
 				});
 			});
-			var l =schedule.scheduleJob('18 * * * *',function(){
+			var l =schedule.scheduleJob('18 * * * ',function(){
 				var post = {status:1};
 				conn.query('INSERT INTO status SET ?', post ,function(error,result,fields){
 					if(error) throw error;
