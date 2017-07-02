@@ -8,37 +8,44 @@
 </head>
 
 <body>
-
-    <div id="main"></div>
-    <h1>宠物屋实时</h1>
-    <div id="indoor">
-        <img src="img/1.png" alt="" id="image1">
-        <img src="img/0.png" alt="" id="image0">
-    </div>
-    <div id="fengshan">
-        <img class="feng" src="img/f1.gif" alt="风扇开" id="feng1">
-        <img class="feng" src="img/f0.jpg" alt="风扇关" id="feng0">
-    </div>
-    <form id="myform" action="" method="get">
-        <p id="timefont">喂食次数：</p>
-        <div id="timeset">
-            <select name="time" id="time">
-				<option value="od1">一天一次</option>
-				<option value="od2">一天两次</option>
-				<option value="od3">一天三次</option>
-			</select>
+    <div id="container">
+        <div id="main"></div>
+        <h1>宠物屋实时</h1>
+        <div id="indoor">
+            <img src="img/1.png" alt="" id="image1">
+            <img src="img/0.png" alt="" id="image0">
         </div>
-        <br>
-        <button type="button" id="databtn" onclick="datapush()">提交</button>
+        <div id="fengshan">
+            <img class="feng" src="img/f1.gif" alt="风扇开" id="feng1">
+            <img class="feng" src="img/f0.jpg" alt="风扇关" id="feng0">
+        </div>
+        <form id="myform" action="" method="get">
+            <p id="timefont">喂食次数：</p>
+            <div id="timeset">
+                <select name="time" id="time">
+					<option value="od1">一天一次</option>
+					<option value="od2">一天两次</option>
+					<option value="od3">一天三次</option>
+				</select>
+            </div>
+            <br>
+            <button type="button" id="databtn" onclick="datapush()">提交</button>
 
-    </form>
+        </form>
 
-    <div id="tem"></div>
-    <div id="hum"></div>
-
+        <div id="tem"></div>
+        <div id="hum"></div>
+    </div>
     <script src="echarts.js"></script>
     <script src="draw.js"></script>
+    <script src='draggable.min.js'></script>
+    <script>
+        var elem = document.querySelectorAll('#main, #indoor, #fengshan, #tem, #hum');
+        for (var i = 0, len = elem.length; i < len; i++) {
+            new Draggable(elem[i]);
 
+        }
+    </script>
 </body>
 
 </html>
